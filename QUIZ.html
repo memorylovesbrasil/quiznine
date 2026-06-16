@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Espacial 🚀</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --sky1:#0a0a2e;--sky2:#1a1060;--sky3:#2d1b8e;
+  --star:#fff;
+  --moon:#f5e642;
+  --earth:#1e8fff;
+  --grass:#2ecc71;
+  --rocket:#e0e0e0;
+  --fire1:#ff6b35;--fire2:#ffd166;
+  --accent:#a29bfe;
+  --gold:#fdcb6e;
+  --green:#00b894;
+  --red:#d63031;
+  --pink:#fd79a8;
+  --card:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.12);
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--sky1);
+  min-height:100vh;
+  overflow-x:hidden;
+  color:#fff;
+}
+
+/* ===== SPACE BG ===== */
+#space-bg{
+  position:fixed;inset:0;
+  background:linear-gradient(180deg,#020215 0%,#0a0a2e 40%,#1a1060 100%);
+  z-index:0;overflow:hidden;
+}
+.star-layer{position:absolute;inset:0;}
+.star-dot{
+  position:absolute;border-radius:50%;
+  background:#fff;
+  animation:twinkle var(--d,3s) infinite var(--delay,0s);
+}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1.3)}}
+
+/* ===== PIXEL MOON ===== */
+#moon{
+  position:fixed;top:60px;right:80px;width:80px;height:80px;z-index:1;
+  image-rendering:pixelated;
+}
+.moon-grid{display:grid;grid-template-columns:repeat(8,10px);grid-template-rows:repeat(8,10px);}
+.mp{width:10px;height:10px;}
+.m1{background:#f5e642;}
+.m2{background:#d4c520;}
+.m0{background:transparent;}
+
+/* ===== EARTH (bottom) ===== */
+#earth-strip{
+  position:fixed;bottom:0;left:0;right:0;height:40px;
+  background:linear-gradient(0deg,#1a6b3c 0%,#2ecc71 60%,#27ae60 100%);
+  z-index:1;
+  border-top:3px solid #1a5c34;
+}
+#earth-strip::before{
+  content:'';position:absolute;top:-8px;left:0;right:0;height:16px;
+  background:radial-gradient(ellipse 60px 16px at 120px 8px, #27ae60 0%,transparent 100%),
+             radial-gradient(ellipse 80px 16px at 300px 8px, #2ecc71 0%,transparent 100%),
+             radial-gradient(ellipse 50px 16px at 500px 8px, #27ae60 0%,transparent 100%),
+             radial-gradient(ellipse 90px 16px at 700px 8px, #2ecc71 0%,transparent 100%);
+  border-radius:50%;
+}
+
+/* ===== PIXEL ROCKET (CSS sprite) ===== */
+.pixel-rocket{
+  position:relative;
+  width:48px;height:80px;
+  image-rendering:pixelated;
+  display:inline-block;
+}
+.pixel-rocket .rocket-body{
+  position:absolute;
+  width:24px;height:48px;
+  left:12px;top:16px;
+  background:#e0e0e0;
+  border-radius:50% 50% 0 0 / 70% 70% 0 0;
+}
+.pixel-rocket .rocket-body::before{
+  content:'';position:absolute;
+  width:10px;height:10px;
+  background:#4fc3f7;
+  border-radius:50%;
+  top:12px;left:7px;
+  border:2px solid #90caf9;
+}
+.pixel-rocket .rocket-fin-l{
+  position:absolute;bottom:16px;left:4px;
+  width:10px;height:16px;
+  background:#ef5350;
+  clip-path:polygon(100% 0,100% 100%,0 100%);
+}
+.pixel-rocket .rocket-fin-r{
+  position:absolute;bottom:16px;right:4px;
+  width:10px;height:16px;
+  background:#ef5350;
+  clip-path:polygon(0 0,0 100%,100% 100%);
+}
+.pixel-rocket .rocket-nozzle{
+  position:absolute;bottom:8px;left:16px;
+  width:16px;height:10px;
+  background:#9e9e9e;
+  border-radius:0 0 4px 4px;
+}
+.pixel-rocket .rocket-fire{
+  position:absolute;bottom:0px;left:17px;
+  width:14px;height:20px;
+  background:linear-gradient(0deg,#ff6b35,#ffd166,#fff 80%);
+  border-radius:50% 50% 40% 40%;
+  animation:fireFlicker .15s infinite alternate;
+  filter:blur(1px);
+}
+@keyframes fireFlicker{
+  from{transform:scaleX(.8) scaleY(.9);}
+  to{transform:scaleX(1.2) scaleY(1.1);}
+}
+.pixel-rocket .rocket-stripe{
+  position:absolute;top:34px;left:12px;
+  width:24px;height:4px;
+  background:#ef5350;
+}
+
+/* ===== PIXEL ASTRONAUT ===== */
+.pixel-astronaut{
+  position:relative;display:inline-block;
+  width:40px;height:56px;
+  image-rendering:pixelated;
+}
+.astro-helmet{
+  position:absolute;top:0;left:4px;
+  width:32px;height:24px;
+  background:#e0e0e0;
+  border-radius:50% 50% 40% 40%;
+  border:3px solid #bbb;
+}
+.astro-visor{
+  position:absolute;top:6px;left:8px;
+  width:16px;height:10px;
+  background:#4fc3f7;
+  border-radius:4px;
+  box-shadow:0 0 6px rgba(79,195,247,.8);
+}
+.astro-body{
+  position:absolute;top:22px;left:6px;
+  width:28px;height:22px;
+  background:#e0e0e0;
+  border-radius:4px;
+  border:2px solid #bbb;
+}
+.astro-body::before{
+  content:'';position:absolute;
+  top:4px;left:6px;
+  width:16px;height:10px;
+  background:#90caf9;
+  border-radius:2px;
+}
+.astro-arm-l{
+  position:absolute;top:24px;left:-2px;
+  width:8px;height:16px;
+  background:#e0e0e0;border-radius:4px;
+  border:2px solid #bbb;
+}
+.astro-arm-r{
+  position:absolute;top:24px;right:-2px;
+  width:8px;height:16px;
+  background:#e0e0e0;border-radius:4px;
+  border:2px solid #bbb;
+}
+.astro-leg-l{
+  position:absolute;bottom:0;left:6px;
+  width:11px;height:14px;
+  background:#bdbdbd;border-radius:3px;
+}
+.astro-leg-r{
+  position:absolute;bottom:0;right:6px;
+  width:11px;height:14px;
+  background:#bdbdbd;border-radius:3px;
+}
+
+/* ===== PLANET DECORATIONS ===== */
+.planet{
+  position:fixed;border-radius:50%;
+  z-index:1;opacity:.6;
+}
+#planet-red{
+  width:50px;height:50px;
+  background:radial-gradient(circle at 35% 35%,#ff8a65,#d84315);
+  top:200px;left:40px;
+  box-shadow:0 0 20px rgba(216,67,21,.4);
+}
+#planet-purple{
+  width:35px;height:35px;
+  background:radial-gradient(circle at 35% 35%,#ce93d8,#6a1b9a);
+  bottom:200px;right:60px;
+  box-shadow:0 0 15px rgba(106,27,154,.4);
+}
+#planet-blue{
+  width:25px;height:25px;
+  background:radial-gradient(circle at 35% 35%,#81d4fa,#01579b);
+  top:120px;left:200px;
+  box-shadow:0 0 10px rgba(1,87,155,.4);
+}
+
+/* ===== SHOOTING STARS ===== */
+.shooting-star{
+  position:fixed;
+  width:3px;height:3px;
+  background:#fff;
+  border-radius:50%;
+  box-shadow:10px 0 6px 2px rgba(255,255,255,.6);
+  animation:shoot var(--d,4s) linear var(--delay,0s) infinite;
+  opacity:0;
+}
+@keyframes shoot{
+  0%{opacity:0;transform:translate(0,0)}
+  5%{opacity:1}
+  80%{opacity:1}
+  100%{opacity:0;transform:translate(-600px,300px)}
+}
+
+/* ===== MAIN CONTAINER ===== */
+#app{
+  position:relative;z-index:2;
+  max-width:720px;
+  margin:0 auto;
+  padding:20px 16px 60px;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+
+/* ===== CARDS ===== */
+.card{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:28px;
+  padding:32px 28px;
+  width:100%;
+  box-shadow:0 8px 40px rgba(0,0,0,.4);
+}
+
+/* ===== SCREEN MANAGEMENT ===== */
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp .5s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== BUTTONS ===== */
+.btn{
+  padding:14px 36px;
+  border:none;border-radius:50px;
+  font-family:'Fredoka One',cursive;
+  font-size:1.2rem;
+  cursor:pointer;
+  transition:all .2s;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.btn:hover{transform:translateY(-3px);filter:brightness(1.1);}
+.btn:active{transform:translateY(0) scale(.97);}
+.btn-primary{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;box-shadow:0 6px 20px rgba(108,92,231,.4);}
+.btn-green{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;box-shadow:0 6px 20px rgba(0,184,148,.4);}
+.btn-gold{background:linear-gradient(135deg,#f9ca24,#f0932b);color:#fff;box-shadow:0 6px 20px rgba(249,202,36,.4);}
+.btn-pink{background:linear-gradient(135deg,#fd79a8,#e84393);color:#fff;box-shadow:0 6px 20px rgba(253,121,168,.4);}
+.btn-outline{background:transparent;border:2px solid rgba(255,255,255,.3);color:#fff;}
+.btn-sm{padding:10px 22px;font-size:1rem;}
+
+/* ===== LEVEL SELECT ===== */
+.level-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  margin:24px 0;
+}
+.level-card{
+  background:rgba(255,255,255,.06);
+  border:2px solid rgba(255,255,255,.1);
+  border-radius:20px;
+  padding:18px 12px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .3s;
+  position:relative;
+  overflow:hidden;
+}
+.level-card:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1);}
+.level-card.locked{opacity:.4;cursor:not-allowed;}
+.level-card.locked:hover{transform:none;}
+.level-card.completed{border-color:var(--gold);}
+.level-num{
+  font-family:'Fredoka One',cursive;
+  font-size:2rem;color:#fff;
+}
+.level-name{font-size:.85rem;color:rgba(255,255,255,.7);margin:4px 0;font-weight:700;}
+.level-stars{font-size:1.1rem;margin-top:6px;}
+.level-badge{
+  position:absolute;top:8px;right:8px;
+  font-size:.7rem;font-weight:800;
+  padding:2px 8px;border-radius:10px;
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.badge-easy{background:rgba(0,184,148,.3);color:#00b894;}
+.badge-medium{background:rgba(253,203,110,.3);color:#fdcb6e;}
+.badge-hard{background:rgba(214,48,49,.3);color:#ff7675;}
+.level-planet{font-size:2.5rem;margin-bottom:6px;}
+
+/* ===== TITLE ===== */
+.game-title{
+  font-family:'Fredoka One',cursive;
+  font-size:3rem;
+  text-align:center;
+  background:linear-gradient(135deg,#a29bfe,#fd79a8,#fdcb6e);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:6px;
+  line-height:1.1;
+}
+.game-sub{
+  text-align:center;color:rgba(255,255,255,.6);
+  font-size:1.05rem;font-weight:700;margin-bottom:28px;
+}
+
+/* ===== HUD ===== */
+.hud{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(0,0,0,.3);
+  border-radius:16px;padding:10px 16px;
+  margin-bottom:16px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.hud-item{display:flex;align-items:center;gap:6px;font-weight:800;font-size:1rem;}
+.score-val{color:var(--gold);font-family:'Fredoka One',cursive;font-size:1.3rem;}
+.lives-wrap{display:flex;gap:4px;}
+.heart{font-size:1.2rem;transition:all .3s;}
+.heart.lost{filter:grayscale(1);opacity:.3;}
+
+/* ===== PROGRESS FLIGHT PATH ===== */
+.flight-path{
+  position:relative;height:56px;
+  background:rgba(0,0,0,.2);
+  border-radius:28px;
+  margin-bottom:18px;
+  border:1px dashed rgba(255,255,255,.15);
+  overflow:hidden;
+}
+.flight-stars{position:absolute;inset:0;pointer-events:none;}
+.path-astro{
+  position:absolute;
+  top:50%;transform:translateY(-50%);
+  left:2%;
+  transition:left .6s cubic-bezier(.34,1.56,.64,1);
+  font-size:0;
+  z-index:2;
+}
+.path-target{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  font-size:1.8rem;
+}
+.path-checkpoint{
+  position:absolute;top:50%;transform:translateY(-50%);
+  font-size:.8rem;opacity:.5;
+}
+
+/* ===== QUESTION CARD ===== */
+.q-card{
+  background:rgba(255,255,255,.07);
+  border-radius:24px;
+  padding:28px 24px;
+  border:1px solid rgba(255,255,255,.1);
+  margin-bottom:14px;
+}
+.q-cat{
+  display:inline-block;padding:4px 14px;
+  border-radius:12px;font-size:.78rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.8px;
+  margin-bottom:12px;
+}
+.cat-pt{background:rgba(108,92,231,.4);color:#a29bfe;}
+.cat-en{background:rgba(0,206,201,.4);color:#81ecec;}
+.q-topic{
+  font-size:.82rem;font-weight:700;
+  color:rgba(255,255,255,.5);margin-bottom:8px;
+  background:rgba(255,255,255,.06);
+  display:inline-block;padding:3px 10px;border-radius:8px;
+}
+.q-num{color:rgba(255,255,255,.5);font-size:.9rem;font-weight:700;margin-bottom:8px;}
+.q-text{
+  color:#fff;font-size:1.25rem;font-weight:800;
+  line-height:1.5;margin-bottom:22px;
+}
+
+/* ===== OPTIONS ===== */
+.options{display:grid;gap:10px;}
+.opt-btn{
+  width:100%;
+  background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.12);
+  border-radius:16px;
+  padding:14px 18px;
+  color:#fff;
+  font-size:1rem;font-weight:700;
+  cursor:pointer;
+  text-align:left;
+  display:flex;align-items:center;gap:12px;
+  transition:all .2s;
+  font-family:'Nunito',sans-serif;
+}
+.opt-btn:hover:not(.disabled){
+  background:rgba(255,255,255,.1);
+  border-color:rgba(255,255,255,.3);
+  transform:translateX(6px);
+}
+.opt-btn.disabled{pointer-events:none;}
+.opt-letter{
+  min-width:34px;height:34px;
+  border-radius:10px;
+  background:rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:.9rem;
+  transition:all .2s;
+  flex-shrink:0;
+}
+.opt-btn.correct{border-color:#00b894;background:rgba(0,184,148,.15);}
+.opt-btn.correct .opt-letter{background:#00b894;}
+.opt-btn.wrong{border-color:#d63031;background:rgba(214,48,49,.15);}
+.opt-btn.wrong .opt-letter{background:#d63031;}
+.opt-btn.pulse-correct{animation:pulseGreen .5s ease;}
+@keyframes pulseGreen{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+
+/* ===== TIMER BAR ===== */
+.timer-wrap{
+  height:6px;border-radius:6px;
+  background:rgba(255,255,255,.1);
+  margin-bottom:16px;overflow:hidden;
+}
+.timer-fill{
+  height:100%;border-radius:6px;
+  background:linear-gradient(90deg,#00b894,#fdcb6e,#d63031);
+  transition:width .1s linear;
+}
+
+/* ===== FEEDBACK ===== */
+.feedback{
+  padding:12px 18px;border-radius:14px;
+  font-weight:800;font-size:.95rem;
+  display:none;margin-top:14px;
+  align-items:flex-start;gap:10px;
+  line-height:1.4;
+}
+.feedback.show{display:flex;}
+.feedback.ok{background:rgba(0,184,148,.2);border:1px solid rgba(0,184,148,.4);color:#55efc4;}
+.feedback.err{background:rgba(214,48,49,.2);border:1px solid rgba(214,48,49,.4);color:#ff7675;}
+
+/* ===== NEXT BTN ===== */
+#nextBtn{
+  width:100%;margin-top:14px;display:none;
+  justify-content:center;
+  background:linear-gradient(135deg,#6c5ce7,#a29bfe);
+  border:none;border-radius:50px;padding:14px;
+  color:#fff;font-family:'Fredoka One',cursive;font-size:1.1rem;
+  cursor:pointer;transition:all .2s;
+  align-items:center;gap:8px;
+}
+#nextBtn.show{display:flex;animation:fadeUp .3s ease;}
+#nextBtn:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(108,92,231,.5);}
+
+/* ===== STREAK BADGE ===== */
+#streakBadge{
+  position:fixed;top:16px;right:16px;z-index:100;
+  background:linear-gradient(135deg,#fdcb6e,#e17055);
+  color:#fff;padding:8px 16px;border-radius:20px;
+  font-weight:900;font-size:.9rem;
+  display:none;
+  box-shadow:0 4px 16px rgba(225,112,85,.5);
+  animation:fadeUp .3s ease;
+}
+#streakBadge.show{display:block;}
+
+/* ===== COIN DISPLAY ===== */
+#coinHUD{
+  position:fixed;top:16px;left:16px;z-index:100;
+  background:rgba(0,0,0,.5);
+  border:2px solid var(--gold);
+  color:var(--gold);
+  padding:8px 16px;border-radius:20px;
+  font-weight:900;font-size:1.1rem;
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;gap:6px;
+}
+
+/* ===== RESULT SCREEN ===== */
+.result-title{
+  font-family:'Fredoka One',cursive;
+  font-size:2.2rem;text-align:center;color:#fff;
+  margin:12px 0 6px;
+}
+.result-sub{text-align:center;color:rgba(255,255,255,.6);font-size:1rem;font-weight:700;margin-bottom:24px;}
+.stars-row{text-align:center;font-size:3rem;margin:10px 0 20px;}
+.star-anim{
+  display:inline-block;
+  animation:starPop .5s ease both;
+}
+@keyframes starPop{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:scale(1);opacity:1}}
+.stat-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-bottom:24px;
+}
+.stat-card{
+  background:rgba(255,255,255,.07);
+  border-radius:16px;padding:16px 12px;
+  text-align:center;border:1px solid rgba(255,255,255,.08);
+}
+.stat-val{font-family:'Fredoka One',cursive;font-size:1.8rem;color:#fff;}
+.stat-lbl{color:rgba(255,255,255,.5);font-size:.8rem;font-weight:700;margin-top:4px;}
+.btns-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+
+/* ===== LEVEL COMPLETE BADGES ===== */
+.xp-pill{
+  display:inline-block;
+  background:linear-gradient(135deg,#fdcb6e,#e17055);
+  color:#fff;padding:6px 16px;border-radius:20px;
+  font-weight:900;font-size:1rem;
+  margin:8px auto;
+}
+
+/* ===== ROCKET LAUNCH OVERLAY ===== */
+#launchOverlay{
+  display:none;
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(180deg,#020215 0%,#0a0a2e 60%,#1a1060 100%);
+  align-items:center;justify-content:center;
+  flex-direction:column;overflow:hidden;
+}
+#launchOverlay.active{display:flex;}
+.launch-title{
+  font-family:'Fredoka One',cursive;
+  font-size:2.8rem;color:var(--gold);
+  text-shadow:0 0 30px rgba(253,203,110,.6);
+  margin-bottom:40px;z-index:2;text-align:center;
+}
+#launchRocket{
+  position:relative;z-index:2;
+  animation:rocketLaunch 3.5s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes rocketLaunch{
+  0%{transform:translateY(60vh) scale(.7);}
+  15%{transform:translateY(55vh) scale(1) rotate(3deg);}
+  25%{transform:translateY(55vh) scale(1) rotate(-3deg);}
+  35%{transform:translateY(55vh) scale(1) rotate(0);}
+  100%{transform:translateY(-200vh) scale(1.3);}
+}
+.launch-star{position:absolute;width:2px;height:20px;background:#fff;border-radius:2px;}
+@keyframes speedStar{
+  0%{transform:translateY(-10vh);}
+  100%{transform:translateY(110vh);}
+}
+#moonLanding{
+  position:absolute;top:80px;right:120px;z-index:1;
+  animation:moonAppear 1s ease 3s both;
+}
+@keyframes moonAppear{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+
+/* ===== CONFETTI ===== */
+#confetti-layer{
+  position:fixed;inset:0;pointer-events:none;z-index:200;
+  overflow:hidden;
+}
+.conf{
+  position:absolute;
+  top:-10px;
+  width:8px;height:8px;
+  animation:confFall linear var(--d) var(--delay) both;
+  border-radius:1px;
+}
+@keyframes confFall{
+  0%{transform:translateY(0) rotate(0);opacity:1;}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0;}
+}
+
+/* ===== IDLE ASTRONAUT (start screen) ===== */
+.hero-astro{
+  position:relative;
+  display:inline-block;
+  margin:10px auto;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-16px);}
+}
+.hero-astro::after{
+  content:'';
+  position:absolute;
+  bottom:-16px;left:50%;transform:translateX(-50%);
+  width:50px;height:8px;
+  background:rgba(255,255,255,.15);
+  border-radius:50%;
+  animation:shadow 3s ease-in-out infinite;
+}
+@keyframes shadow{
+  0%,100%{width:50px;opacity:.3}
+  50%{width:30px;opacity:.15}
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  .game-title{font-size:2.2rem;}
+  .q-text{font-size:1.05rem;}
+  .stat-grid{grid-template-columns:1fr;}
+  .level-grid{grid-template-columns:repeat(2,1fr);}
+  .card{padding:22px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SPACE BACKGROUND ===== -->
+<div id="space-bg">
+  <div class="star-layer" id="starLayer"></div>
+</div>
+
+<!-- MOON pixel art -->
+<div id="moon"></div>
+
+<!-- Decorative planets -->
+<div class="planet" id="planet-red"></div>
+<div class="planet" id="planet-purple"></div>
+<div class="planet" id="planet-blue"></div>
+
+<!-- Earth strip -->
+<div id="earth-strip"></div>
+
+<!-- Shooting stars -->
+<div id="shootingStars"></div>
+
+<!-- Fixed UI -->
+<div id="coinHUD">🪙 <span id="coinCount">0</span></div>
+<div id="streakBadge">🔥 <span id="streakCount">2</span> seguidas!</div>
+<div id="confetti-layer"></div>
+
+<!-- ===== ROCKET LAUNCH OVERLAY ===== -->
+<div id="launchOverlay">
+  <div class="launch-title" id="launchTitle">PERFEITO! 🌟</div>
+  <div id="moonLanding" style="font-size:5rem;">🌕</div>
+  <div id="launchRocket">
+    <div class="pixel-rocket" style="transform:scale(3);">
+      <div class="rocket-body"></div>
+      <div class="rocket-stripe"></div>
+      <div class="rocket-fin-l"></div>
+      <div class="rocket-fin-r"></div>
+      <div class="rocket-nozzle"></div>
+      <div class="rocket-fire"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+
+  <!-- START SCREEN -->
+  <div class="screen active" id="startScreen">
+    <div class="card" style="text-align:center;">
+      <div class="hero-astro" style="display:block;text-align:center;margin:0 auto;">
+        <div class="pixel-astronaut" style="transform:scale(2.5);margin:28px auto 28px;display:block;"></div>
+      </div>
+
+      <h1 class="game-title">Quiz Espacial</h1>
+      <p class="game-sub">2º Ano • Português & Inglês • Missão Lunar! 🚀</p>
+
+      <div style="display:flex;gap:12px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="goToLevels()">
+          🚀 Jogar!
+        </button>
+        <button class="btn btn-gold btn-sm" onclick="openShop()">
+          🛒 Loja
+        </button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div style="background:rgba(255,255,255,.05);border-radius:14px;padding:12px;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:4px;">🏆</div>
+          <div id="best-score-display" style="font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--gold);">0</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.5);font-weight:700;">Recorde</div>
+        </div>
+        <div style="background:rgba(255,255,255,.05);border-radius:14px;padding:12px;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:4px;">⭐</div>
+          <div id="total-stars-display" style="font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--gold);">0</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.5);font-weight:700;">Estrelas</div>
+        </div>
+        <div style="background:rgba(255,255,255,.05);border-radius:14px;padding:12px;text-align:center;">
+          <div style="font-size:1.6rem;margin-bottom:4px;">🪙</div>
+          <div id="coins-display-start" style="font-family:'Fredoka One',cursive;font-size:1.2rem;color:var(--gold);">0</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.5);font-weight:700;">Moedas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEVELS SCREEN -->
+  <div class="screen" id="levelsScreen">
+    <div class="card">
+      <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;text-align:center;margin-bottom:6px;">Escolha a Missão</h2>
+      <p style="text-align:center;color:rgba(255,255,255,.5);font-size:.9rem;font-weight:700;margin-bottom:4px;">Cada missão tem 10 perguntas</p>
+      <div class="level-grid" id="levelGrid"></div>
+      <div style="text-align:center;margin-top:8px;">
+        <button class="btn btn-outline btn-sm" onclick="switchTo('startScreen')">← Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBJECT SELECT -->
+  <div class="screen" id="subjectScreen">
+    <div class="card" style="text-align:center;">
+      <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:8px;" id="subjectLevelName">Missão 1</h2>
+      <p style="color:rgba(255,255,255,.5);font-size:.95rem;font-weight:700;margin-bottom:28px;">Qual matéria você quer praticar?</p>
+      <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px;">
+        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:1.2rem;padding:18px;" onclick="startGame('portugues')">
+          🇧🇷 Português
+        </button>
+        <button class="btn" style="width:100%;justify-content:center;font-size:1.2rem;padding:18px;background:linear-gradient(135deg,#00cec9,#81ecec);color:#1a1a2e;" onclick="startGame('ingles')">
+          🇬🇧 Inglês
+        </button>
+        <button class="btn btn-pink" style="width:100%;justify-content:center;font-size:1.2rem;padding:18px;" onclick="startGame('ambos')">
+          🌟 Os Dois!
+        </button>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="switchTo('levelsScreen')">← Voltar</button>
+    </div>
+  </div>
+
+  <!-- SHOP SCREEN -->
+  <div class="screen" id="shopScreen">
+    <div class="card">
+      <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;text-align:center;margin-bottom:4px;">🛒 Loja Espacial</h2>
+      <p style="text-align:center;color:rgba(255,255,255,.5);font-size:.9rem;font-weight:700;margin-bottom:20px;">Compre trajes com suas moedas!</p>
+      <div id="shopGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;max-height:380px;overflow-y:auto;padding:4px;"></div>
+      <div style="text-align:center;margin-top:20px;">
+        <button class="btn btn-outline btn-sm" onclick="switchTo('startScreen')">🏠 Início</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="gameScreen">
+    <div class="hud">
+      <div class="hud-item">⭐ <span class="score-val" id="scoreDisplay">0</span></div>
+      <div class="hud-item" id="levelLabel" style="color:rgba(255,255,255,.6);font-size:.85rem;"></div>
+      <div class="hud-item">
+        <div class="lives-wrap" id="livesContainer"></div>
+      </div>
+    </div>
+
+    <!-- Flight progress path -->
+    <div class="flight-path">
+      <div class="flight-stars" id="pathStars"></div>
+      <div class="path-astro" id="pathAstro">
+        <div class="pixel-astronaut" style="transform:scale(1.1);"></div>
+      </div>
+      <div class="path-target" id="pathTarget">🌙</div>
+      <!-- checkpoints -->
+      <div class="path-checkpoint" style="left:25%">╎</div>
+      <div class="path-checkpoint" style="left:50%">╎</div>
+      <div class="path-checkpoint" style="left:75%">╎</div>
+    </div>
+
+    <div class="timer-wrap">
+      <div class="timer-fill" id="timerFill" style="width:100%"></div>
+    </div>
+
+    <div class="q-card">
+      <span class="q-cat" id="qCat">Português</span>
+      <div class="q-topic" id="qTopic">Ortografia</div>
+      <div class="q-num" id="qNum">Pergunta 1 de 10</div>
+      <div class="q-text" id="qText">Carregando...</div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <button id="nextBtn" onclick="nextQuestion()">Próxima Questão →</button>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="resultScreen">
+    <div class="card" style="text-align:center;">
+      <div style="font-size:4rem;animation:float 2s ease-in-out infinite;" id="resultIcon">🏆</div>
+      <div class="stars-row" id="starsRow"></div>
+      <h2 class="result-title" id="resultTitle">Parabéns!</h2>
+      <p class="result-sub" id="resultSub">Você foi incrível!</p>
+      <div id="xpPill" class="xp-pill" style="display:none;"></div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="statScore">0</div>
+          <div class="stat-lbl">Pontos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statCorrect">0/10</div>
+          <div class="stat-lbl">Acertos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="statStreak">0</div>
+          <div class="stat-lbl">Melhor Série</div>
+        </div>
+      </div>
+      <div class="btns-row">
+        <button class="btn btn-green" onclick="restartLevel()">🔄 Jogar de Novo</button>
+        <button class="btn btn-primary" onclick="switchTo('levelsScreen')">🗺️ Missões</button>
+        <button class="btn btn-gold btn-sm" onclick="openShop()">🛒 Loja</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const LEVELS = [
+  { id:1, name:'Planeta Terra', planet:'🌍', diff:'Fácil', badge:'easy', subject:'ambos' },
+  { id:2, name:'Lua Cheia',     planet:'🌕', diff:'Fácil', badge:'easy', subject:'portugues' },
+  { id:3, name:'Marte',         planet:'🔴', diff:'Médio', badge:'medium', subject:'ingles' },
+  { id:4, name:'Saturno',       planet:'🪐', diff:'Médio', badge:'medium', subject:'ambos' },
+  { id:5, name:'Netuno',        planet:'💙', diff:'Difícil', badge:'hard', subject:'portugues' },
+  { id:6, name:'Via Láctea',    planet:'🌌', diff:'Difícil', badge:'hard', subject:'ambos' },
+];
+
+const SHOP_ITEMS = [
+  { id:'default', name:'Astronauta', price:0,   emoji:'👨‍🚀' },
+  { id:'girl',    name:'Astronauta ♀', price:80, emoji:'👩‍🚀' },
+  { id:'ninja',   name:'Ninja',     price:120, emoji:'🥷'   },
+  { id:'hero',    name:'Herói',     price:200, emoji:'🦸'   },
+  { id:'robot',   name:'Robô',      price:350, emoji:'🤖'   },
+  { id:'alien',   name:'Alien',     price:500, emoji:'👽'   },
+  { id:'dino',    name:'Dino',      price:800, emoji:'🦖'   },
+];
+
+const CONF_COLORS = ['#a29bfe','#fd79a8','#fdcb6e','#00cec9','#00b894','#e84393','#6c5ce7','#fab1a0'];
+
+// ============================================================
+// QUESTIONS DB
+// ============================================================
+const QDB = {
+  portugues: [
+    { topic:'Ortografia: G e J', q:'Qual palavra está escrita corretamente?', opts:['Girafa','Jirafa','Giraffa','Jiraffa'], c:0, exp:'Girafa se escreve com G!' },
+    { topic:'Ortografia: G e J', q:'Complete: O _____ comeu o bolo todo!', opts:['garoto','jaroto','garotto','jarotto'], c:0, exp:'Garoto se escreve com G!' },
+    { topic:'Ortografia: LH', q:'Qual palavra usa LH corretamente?', opts:['Folha','Folia','Folhaa','Folía'], c:0, exp:'Folha se escreve com LH!' },
+    { topic:'Ortografia: LH', q:'O _____ brilha no céu à noite.', opts:['brilho','briho','briloo','brilio'], c:0, exp:'Brilho se escreve com LH!' },
+    { topic:'Ortografia: NH', q:'Qual palavra está correta?', opts:['Ninho','Nino','Ninnho','Niño'], c:0, exp:'Ninho se escreve com NH!' },
+    { topic:'Ortografia: NH', q:'A _____ cantou uma linda música.', opts:['galinha','galina','galiña','galinnha'], c:0, exp:'Galinha se escreve com NH!' },
+    { topic:'M antes de P e B', q:'Qual está escrito corretamente?', opts:['Campo','Canpo','Campu','Canpu'], c:0, exp:'Antes de P usamos M! Campo!' },
+    { topic:'M antes de P e B', q:'Complete: O _____ está muito bonito hoje.', opts:['tempo','tenpo','tampo','tampu'], c:0, exp:'Tempo! Antes de P usamos M!' },
+    { topic:'Plural', q:'O plural de "lápis" é:', opts:['Lápis','Lápises','Lápisos','Lápiss'], c:0, exp:'Lápis termina em S, o plural não muda!' },
+    { topic:'Plural', q:'Qual é o plural de "mês"?', opts:['Meses','Mêses','Mesis','Mesus'], c:0, exp:'O plural de mês é meses!' },
+    { topic:'Acento: Til (~)', q:'Qual palavra usa o til (~) corretamente?', opts:['Mão','Mao','Mam','Mãoz'], c:0, exp:'Mão usa o til (~) sobre o A!' },
+    { topic:'Acento: Til (~)', q:'Qual palavra tem til?', opts:['Pão','Pao','Paum','Pam'], c:0, exp:'Pão tem til (~)!' },
+    { topic:'Grau Aumentativo', q:'Qual é o aumentativo de "casa"?', opts:['Casarão','Casinha','Casita','Casebre'], c:0, exp:'Casarão é o aumentativo de casa!' },
+    { topic:'Grau Aumentativo', q:'O aumentativo de "cão" é:', opts:['Cachorrão','Cãozinho','Cãezito','Cãozão'], c:0, exp:'Cachorrão é o aumentativo de cão!' },
+    { topic:'Grau Diminutivo', q:'Qual é o diminutivo de "flor"?', opts:['Florzinha','Florona','Florzona','Florão'], c:0, exp:'Florzinha é o diminutivo de flor!' },
+    { topic:'Grau Diminutivo', q:'O diminutivo de "gato" é:', opts:['Gatinho','Gatão','Gatorra','Gatudo'], c:0, exp:'Gatinho é o diminutivo de gato!' },
+    { topic:'Interpretação', q:'Na frase "O sol brilha no céu", qual é o sujeito?', opts:['O sol','Brilha','No céu','O céu'], c:0, exp:'O sol é quem pratica a ação de brilhar!' },
+    { topic:'Interpretação', q:'Qual frase expressa alegria?', opts:['Que dia lindo e feliz!','Estou muito triste.','Choveu o dia todo.','Perdi meu brinquedo.'], c:0, exp:'"Que dia lindo e feliz!" expressa alegria!' },
+    { topic:'Plural', q:'Complete: As _____ voam alto no céu.', opts:['aves','avis','aveses','avus'], c:0, exp:'Aves! Plural terminado em ES!' },
+    { topic:'M antes de P e B', q:'O que colocamos no teto para clarear o quarto?', opts:['Lâmpada','Lânpada','Lãmpada','Lanpada'], c:0, exp:'Lâmpada! Antes de P usamos M!' },
+    { topic:'Grau Aumentativo', q:'Qual é o aumentativo de "nariz"?', opts:['Narigão','Narizão','Narizinho','Narizbão'], c:0, exp:'O aumentativo de nariz é narigão!' },
+    { topic:'Grau Diminutivo', q:'Qual é o diminutivo de "carro"?', opts:['Carrinho','Carrão','Carrito','Carroto'], c:0, exp:'Carrinho é o diminutivo de carro!' },
+    { topic:'Interpretação', q:'Leia: "O gato bebeu todo o leite da tigela." O que o gato bebeu?', opts:['O leite','A água','O suco','A ração'], c:0, exp:'O texto diz que ele bebeu o leite!' },
+    { topic:'Ortografia: G e J', q:'O que guardamos na geladeira para beber?', opts:['Jarra de suco','Garra de suco','Gjarra','Jiarra'], c:0, exp:'Jarra se escreve com J!' },
+    { topic:'Ortografia: LH', q:'Animal que tem orelhas grandes e gosta de cenoura:', opts:['Coelho','Coelo','Coeio','Coelhio'], c:0, exp:'Coelho se escreve com LH!' },
+    { topic:'Ortografia: NH', q:'Como chamamos um porco bem pequeno?', opts:['Porquinho','Porquino','Porcão','Porquiño'], c:0, exp:'Porquinho se escreve com NH!' },
+    { topic:'M antes de P e B', q:'Instrumento que o palhaço bate no circo:', opts:['Tambor','Tanbor','Tabmor','Tanpor'], c:0, exp:'Tambor! Antes de B usamos M!' },
+    { topic:'Acento: Til (~)', q:'O que usamos no banho para fazer espuma?', opts:['Sabão','Sabao','Sabam','Sabãum'], c:0, exp:'Sabão tem o acento Til (~)!' },
+    { topic:'Grau Aumentativo e Diminutivo', q:'Qual par está correto?', opts:['Livrão / Livrinho','Livrão / Livrozão','Livrinho / Livrão','Livretão / Livreto'], c:0, exp:'Livrão (aumentativo) e Livrinho (diminutivo)!' },
+    { topic:'Interpretação', q:'Qual palavra descreve algo muito grande?', opts:['Enorme','Pequenininho','Diminuto','Nano'], c:0, exp:'Enorme significa muito grande!' },
+  ],
+  ingles: [
+    { topic:'Animals', q:'Qual animal faz o som "Moo"?', opts:['Cow','Dog','Cat','Bird'], c:0, exp:'A vaca (Cow) faz "Moo"! 🐄' },
+    { topic:'Animals', q:'Qual é o maior animal do zoológico?', opts:['Elephant','Mouse','Rabbit','Bird'], c:0, exp:'O elefante (Elephant) é o maior! 🐘' },
+    { topic:'Animals', q:'Qual animal tem o pescoço comprido?', opts:['Giraffe','Lion','Fish','Cat'], c:0, exp:'A girafa (Giraffe) tem o pescoço longo! 🦒' },
+    { topic:'Animals', q:'Qual animal pode voar?', opts:['Bird','Elephant','Lion','Monkey'], c:0, exp:'O pássaro (Bird) pode voar! 🐦' },
+    { topic:'Numbers', q:'Como dizemos o número 5 em inglês?', opts:['Five','Four','Six','Three'], c:0, exp:'5 é Five! 🔢' },
+    { topic:'Numbers', q:'Qual número vem depois do 7?', opts:['Eight','Six','Nine','Ten'], c:0, exp:'Depois do 7 vem o 8 (Eight)!' },
+    { topic:'Numbers', q:'Quantas pernas tem uma aranha?', opts:['Eight','Six','Four','Ten'], c:0, exp:'Uma aranha tem oito (Eight) pernas! 🕷️' },
+    { topic:'Months', q:'Qual mês vem depois de Janeiro?', opts:['February','March','April','May'], c:0, exp:'Depois de Janeiro vem Fevereiro (February)! 📅' },
+    { topic:'Months', q:'Quantos meses tem um ano?', opts:['Twelve','Ten','Eleven','Thirteen'], c:0, exp:'Temos doze (Twelve) meses no ano! 📅' },
+    { topic:'Months', q:'Em qual mês comemoramos o Natal?', opts:['December','November','January','October'], c:0, exp:'O Natal é em Dezembro (December)! 🎄' },
+    { topic:'I AM / YOU ARE', q:'Como dizemos "Eu sou" em inglês?', opts:['I am','You are','I is','We are'], c:0, exp:'Eu sou = I am! 😊' },
+    { topic:'I AM / YOU ARE', q:'Como dizemos "Você é" em inglês?', opts:['You are','I am','He is','We are'], c:0, exp:'Você é = You are! 🤗' },
+    { topic:'I AM / YOU ARE', q:'Como dizemos "Eu sou um estudante"?', opts:['I am a student','You are a student','I is a student','I be a student'], c:0, exp:'I am a student! ✅' },
+    { topic:'I AM / YOU ARE', q:'Complete: "____ my friend." (Você é meu amigo)', opts:['You are','I am','He is','We are'], c:0, exp:'Você é = You are. Então: You are my friend! 🎂' },
+    { topic:'Animals', q:'Qual animal vive na água?', opts:['Fish','Lion','Bird','Monkey'], c:0, exp:'O peixe (Fish) vive na água! 🐟' },
+    { topic:'Months', q:'Qual é o primeiro mês do ano?', opts:['January','February','March','December'], c:0, exp:'Janeiro (January) é o primeiro mês! 🎉' },
+    { topic:'Numbers', q:'Como dizemos 10 em inglês?', opts:['Ten','Nine','Eight','Twelve'], c:0, exp:'10 é Ten! 🔟' },
+    { topic:'Months', q:'Em qual mês é o Dia das Crianças no Brasil?', opts:['October','January','March','December'], c:0, exp:'O Dia das Crianças é em Outubro (October)! 🎈' },
+    { topic:'Animals', q:'Qual animal dá um rugido forte (Roar)?', opts:['Lion','Cow','Bird','Fish'], c:0, exp:'O Leão (Lion) dá um rugido! 🦁' },
+    { topic:'Months', q:'Qual mês vem entre Abril e Junho?', opts:['May','March','July','August'], c:0, exp:'Maio (May) vem entre Abril e Junho! 🌸' },
+    { topic:'Animals', q:'Como dizemos "Tigre" em inglês?', opts:['Tiger','Lion','Monkey','Elephant'], c:0, exp:'Tigre em inglês é Tiger! 🐅' },
+    { topic:'Numbers', q:'Como dizemos o número 1 em inglês?', opts:['One','Two','Three','Four'], c:0, exp:'1 é One! ☝️' },
+    { topic:'Numbers', q:'Como dizemos o número 2 em inglês?', opts:['Two','Three','One','Five'], c:0, exp:'2 é Two! ✌️' },
+    { topic:'Numbers', q:'Como dizemos o número 3 em inglês?', opts:['Three','Four','Two','Ten'], c:0, exp:'3 é Three! 🤟' },
+    { topic:'I AM / YOU ARE', q:'Como dizemos "Eu sou feliz" em inglês?', opts:['I am happy','You are happy','I happy','You happy'], c:0, exp:'Eu sou feliz = I am happy! 😄' },
+    { topic:'Animals', q:'Como dizemos "Macaco" em inglês?', opts:['Monkey','Giraffe','Elephant','Bird'], c:0, exp:'Macaco em inglês é Monkey! 🐒' },
+    { topic:'Numbers', q:'Qual número vem antes do cinco (5)?', opts:['Four','Six','Three','Ten'], c:0, exp:'O quatro (Four) vem antes do cinco!' },
+    { topic:'Months', q:'Como dizemos "Março" em inglês?', opts:['March','May','April','June'], c:0, exp:'Março é March! 🗓️' },
+    { topic:'Animals', q:'Animal que pula muito e tem uma bolsa na barriga:', opts:['Kangaroo','Lion','Fish','Bird'], c:0, exp:'O Canguru (Kangaroo) tem uma bolsa! 🦘' },
+    { topic:'I AM / YOU ARE', q:'Como dizemos "Você é alto" em inglês?', opts:['You are tall','I am tall','You is tall','I be tall'], c:0, exp:'Você é = You are. Então: You are tall! 📏' },
+    { topic:'Animals', q:'Qual é o "King of the Jungle" (rei da selva)?', opts:['Lion','Elephant','Tiger','Monkey'], c:0, exp:'O Leão (Lion) é o rei da selva! 👑🦁' },
+  ]
+};
+
+// ============================================================
+// PLAYER STATE
+// ============================================================
+let player = {
+  coins: 0,
+  equipped: 'default',
+  owned: ['default'],
+  bestScore: 0,
+  totalStars: 0,
+  levelStars: {}, // { levelId: stars }
+};
+
+let gs = {
+  level: null,
+  subject: 'ambos',
+  questions: [],
+  idx: 0,
+  score: 0,
+  lives: 3,
+  streak: 0,
+  bestStreak: 0,
+  correct: 0,
+  timer: null,
+  timeLeft: 100,
+  answered: false,
+};
+
+// ============================================================
+// SAVE / LOAD
+// ============================================================
+function savePlayer() {
+  try { localStorage.setItem('quizEspacial_v2', JSON.stringify(player)); } catch(e){}
+}
+function loadPlayer() {
+  try {
+    const d = localStorage.getItem('quizEspacial_v2');
+    if (d) player = { ...player, ...JSON.parse(d) };
+  } catch(e){}
+}
+
+// ============================================================
+// UI INIT
+// ============================================================
+function updateCoinHUD() {
+  document.getElementById('coinCount').textContent = player.coins;
+}
+function updateStartStats() {
+  document.getElementById('best-score-display').textContent = player.bestScore;
+  document.getElementById('total-stars-display').textContent = player.totalStars;
+  document.getElementById('coins-display-start').textContent = player.coins;
+  updateCoinHUD();
+}
+
+// ============================================================
+// SCREEN MANAGEMENT
+// ============================================================
+function switchTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+}
+
+// ============================================================
+// PIXEL MOON
+// ============================================================
+function buildMoon() {
+  const moon = document.getElementById('moon');
+  // 8x8 pixel art moon pattern
+  const grid = [
+    '00111100',
+    '01112110',
+    '11121110',
+    '11211110',
+    '11111110',
+    '11111110',
+    '01111100',
+    '00111100',
+  ];
+  const div = document.createElement('div');
+  div.className = 'moon-grid';
+  grid.forEach(row => {
+    row.split('').forEach(p => {
+      const px = document.createElement('div');
+      px.className = 'mp ' + (p==='1' ? 'm1' : p==='2' ? 'm2' : 'm0');
+      div.appendChild(px);
+    });
+  });
+  moon.appendChild(div);
+}
+
+// ============================================================
+// STARS & DECORATIONS
+// ============================================================
+function buildStars() {
+  const layer = document.getElementById('starLayer');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star-dot';
+    const size = Math.random() * 2.5 + 1;
+    s.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      --d:${(Math.random()*3+2).toFixed(1)}s;
+      --delay:${(Math.random()*5).toFixed(1)}s;
+    `;
+    layer.appendChild(s);
+  }
+}
+
+function buildShootingStars() {
+  const wrap = document.getElementById('shootingStars');
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('div');
+    s.className = 'shooting-star';
+    s.style.cssText = `
+      top:${Math.random()*40+5}%;
+      left:${Math.random()*80+10}%;
+      --d:${(Math.random()*6+4).toFixed(1)}s;
+      --delay:${(Math.random()*10).toFixed(1)}s;
+    `;
+    wrap.appendChild(s);
+  }
+}
+
+function buildPathStars() {
+  const wrap = document.getElementById('pathStars');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.style.cssText = `
+      position:absolute;
+      width:3px;height:3px;
+      border-radius:50%;background:#fff;
+      left:${Math.random()*90+5}%;
+      top:${Math.random()*80+10}%;
+      opacity:${Math.random()*.5+.2};
+    `;
+    wrap.appendChild(s);
+  }
+}
+
+// ============================================================
+// LEVELS
+// ============================================================
+function goToLevels() {
+  renderLevels();
+  switchTo('levelsScreen');
+}
+
+function renderLevels() {
+  const grid = document.getElementById('levelGrid');
+  grid.innerHTML = '';
+  LEVELS.forEach((lv, i) => {
+    const unlocked = i === 0 || getTotalStarsForLevel(LEVELS[i-1].id) >= 1;
+    const stars = player.levelStars[lv.id] || 0;
+    const starsHTML = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+    const card = document.createElement('div');
+    card.className = 'level-card' + (unlocked ? '' : ' locked') + (stars > 0 ? ' completed' : '');
+    card.innerHTML = `
+      <span class="level-badge badge-${lv.badge}">${lv.diff}</span>
+      <div class="level-planet">${lv.planet}</div>
+      <div class="level-num">${lv.id}</div>
+      <div class="level-name">${lv.name}</div>
+      <div class="level-stars">${starsHTML}</div>
+    `;
+    if (unlocked) {
+      card.onclick = () => selectLevel(lv);
+    }
+    grid.appendChild(card);
+  });
+}
+
+function getTotalStarsForLevel(id) {
+  return player.levelStars[id] || 0;
+}
+
+function selectLevel(lv) {
+  gs.level = lv;
+  document.getElementById('subjectLevelName').textContent = `${lv.planet} ${lv.name}`;
+  switchTo('subjectScreen');
+}
+
+// ============================================================
+// SHOP
+// ============================================================
+function openShop() {
+  renderShop();
+  switchTo('shopScreen');
+}
+
+function renderShop() {
+  const grid = document.getElementById('shopGrid');
+  grid.innerHTML = '';
+  SHOP_ITEMS.forEach(item => {
+    const isOwned = player.owned.includes(item.id);
+    const isEquipped = player.equipped === item.id;
+    let btn = '';
+    if (isEquipped) {
+      btn = `<button class="btn btn-sm" style="background:var(--accent);color:#fff;border:none;border-radius:12px;cursor:default;width:100%;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;padding:8px 0;">EQUIPADO</button>`;
+    } else if (isOwned) {
+      btn = `<button class="btn btn-sm btn-green" style="width:100%;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;padding:8px 0;" onclick="equipItem('${item.id}')">USAR</button>`;
+    } else {
+      btn = `<button class="btn btn-sm btn-gold" style="width:100%;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:.85rem;padding:8px 0;" onclick="buyItem('${item.id}',${item.price})">🪙 ${item.price}</button>`;
+    }
+    grid.innerHTML += `
+      <div style="background:rgba(255,255,255,.07);border:2px solid ${isEquipped?'var(--accent)':isOwned?'var(--green)':'rgba(255,255,255,.1)'};border-radius:18px;padding:16px 10px;text-align:center;">
+        <div style="font-size:2.8rem;margin-bottom:6px;animation:float 3s ease-in-out infinite;">${item.emoji}</div>
+        <div style="font-weight:800;font-size:.9rem;margin-bottom:10px;">${item.name}</div>
+        ${btn}
+      </div>
+    `;
+  });
+}
+
+function buyItem(id, price) {
+  if (player.coins >= price) {
+    player.coins -= price;
+    player.owned.push(id);
+    equipItem(id);
+  } else {
+    // shake the coin display
+    const hud = document.getElementById('coinHUD');
+    hud.style.animation = 'none';
+    hud.offsetHeight;
+    hud.style.animation = 'shake .4s ease';
+    setTimeout(()=>hud.style.animation='',500);
+    alert('Você precisa de mais moedas! Continue jogando! 🪙');
+  }
+}
+function equipItem(id) {
+  player.equipped = id;
+  savePlayer();
+  renderShop();
+  updateCoinHUD();
+}
+function getEquippedEmoji() {
+  return SHOP_ITEMS.find(i => i.id === player.equipped)?.emoji || '👨‍🚀';
+}
+
+// ============================================================
+// GAME START
+// ============================================================
+function startGame(subject) {
+  gs.subject = subject;
+  let pool = [];
+  if (subject === 'portugues') pool = [...QDB.portugues];
+  else if (subject === 'ingles') pool = [...QDB.ingles];
+  else pool = [...QDB.portugues, ...QDB.ingles];
+
+  // Shuffle and pick 10
+  pool = shuffle(pool).slice(0, 10);
+  gs.questions = pool;
+  gs.idx = 0;
+  gs.score = 0;
+  gs.lives = 3;
+  gs.streak = 0;
+  gs.bestStreak = 0;
+  gs.correct = 0;
+  gs.answered = false;
+
+  buildPathStars();
+  updatePathAstro();
+  document.getElementById('levelLabel').textContent = gs.level ? `${gs.level.planet} Nível ${gs.level.id}` : '';
+  switchTo('gameScreen');
+  loadQuestion();
+}
+
+// ============================================================
+// QUESTION LOGIC
+// ============================================================
+function loadQuestion() {
+  const q = gs.questions[gs.idx];
+  gs.answered = false;
+  gs.timeLeft = 100;
+
+  // HUD
+  document.getElementById('scoreDisplay').textContent = gs.score;
+  updateLives();
+
+  // Category
+  const isPT = QDB.portugues.includes(q);
+  const catEl = document.getElementById('qCat');
+  catEl.textContent = isPT ? '🇧🇷 Português' : '🇬🇧 Inglês';
+  catEl.className = 'q-cat ' + (isPT ? 'cat-pt' : 'cat-en');
+
+  document.getElementById('qTopic').textContent = q.topic;
+  document.getElementById('qNum').textContent = `Pergunta ${gs.idx+1} de ${gs.questions.length}`;
+  document.getElementById('qText').textContent = q.q;
+
+  // Options (shuffle display order)
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  const idxArr = shuffle([0,1,2,3]);
+
+  idxArr.forEach((origIdx, dispIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.dataset.orig = origIdx;
+    btn.innerHTML = `<span class="opt-letter">${letters[dispIdx]}</span><span>${q.opts[origIdx]}</span>`;
+    btn.onclick = () => selectAnswer(origIdx, btn);
+    container.appendChild(btn);
+  });
+
+  // Reset feedback & next
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').className = '';
+  document.getElementById('nextBtn').style.display = 'none';
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(gs.timer);
+  gs.timeLeft = 100;
+  document.getElementById('timerFill').style.width = '100%';
+
+  gs.timer = setInterval(() => {
+    gs.timeLeft -= 0.5;
+    document.getElementById('timerFill').style.width = gs.timeLeft + '%';
+    if (gs.timeLeft <= 0) {
+      clearInterval(gs.timer);
+      if (!gs.answered) timeUp();
+    }
+  }, 100);
+}
+
+function timeUp() {
+  gs.answered = true;
+  gs.lives--;
+  gs.streak = 0;
+  updateLives();
+  updateStreakBadge();
+
+  const q = gs.questions[gs.idx];
+  document.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.classList.add('disabled');
+    if (parseInt(btn.dataset.orig) === q.c) btn.classList.add('correct');
+  });
+
+  showFeedback(false, '⏰ Tempo esgotado! ' + q.exp);
+
+  if (gs.lives <= 0) {
+    setTimeout(endGame, 2000);
+  } else {
+    showNextBtn();
+  }
+}
+
+function selectAnswer(origIdx, btn) {
+  if (gs.answered) return;
+  gs.answered = true;
+  clearInterval(gs.timer);
+
+  const q = gs.questions[gs.idx];
+  const isOk = origIdx === q.c;
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.add('disabled'));
+
+  if (isOk) {
+    btn.classList.add('correct','pulse-correct');
+    const coinBonus = 10 + gs.streak * 2;
+    player.coins += coinBonus;
+    gs.score += 100 + gs.streak * 20 + Math.floor(gs.timeLeft / 10) * 10;
+    gs.streak++;
+    gs.correct++;
+    if (gs.streak > gs.bestStreak) gs.bestStreak = gs.streak;
+    updatePathAstro();
+    showFeedback(true, `✅ Correto! +${coinBonus}🪙 — ${q.exp}`);
+    miniConfetti();
+    savePlayer();
+  } else {
+    btn.classList.add('wrong');
+    gs.lives--;
+    gs.streak = 0;
+    document.querySelectorAll('.opt-btn').forEach(b => {
+      if (parseInt(b.dataset.orig) === q.c) b.classList.add('correct');
+    });
+    showFeedback(false, `❌ Ops! ${q.exp}`);
+  }
+
+  document.getElementById('scoreDisplay').textContent = gs.score;
+  updateLives();
+  updateStreakBadge();
+
+  if (gs.lives <= 0) {
+    setTimeout(endGame, 2200);
+  } else {
+    showNextBtn();
+  }
+}
+
+function showFeedback(ok, msg) {
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (ok ? 'ok' : 'err');
+  fb.innerHTML = `<span>${ok?'🎉':'😢'}</span><span>${msg}</span>`;
+}
+
+function showNextBtn() {
+  const btn = document.getElementById('nextBtn');
+  btn.style.display = 'flex';
+  btn.className = 'show';
+}
+
+function nextQuestion() {
+  gs.idx++;
+  if (gs.idx >= gs.questions.length) {
+    endGame();
+  } else {
+    loadQuestion();
+  }
+}
+
+// ============================================================
+// PROGRESS PATH
+// ============================================================
+function updatePathAstro() {
+  const total = gs.questions.length || 10;
+  const pct = (gs.correct / total) * 82 + 3; // 3% to 85%
+  document.getElementById('pathAstro').style.left = pct + '%';
+}
+
+// ============================================================
+// LIVES & STREAK
+// ============================================================
+function updateLives() {
+  const c = document.getElementById('livesContainer');
+  c.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const h = document.createElement('span');
+    h.className = 'heart' + (i >= gs.lives ? ' lost' : '');
+    h.textContent = '❤️';
+    c.appendChild(h);
+  }
+}
+
+function updateStreakBadge() {
+  const b = document.getElementById('streakBadge');
+  if (gs.streak >= 2) {
+    b.className = 'show';
+    document.getElementById('streakCount').textContent = gs.streak;
+    b.style.display = 'block';
+  } else {
+    b.style.display = 'none';
+  }
+}
+
+// ============================================================
+// END GAME
+// ============================================================
+function endGame() {
+  clearInterval(gs.timer);
+  const total = gs.questions.length;
+  const pct = (gs.correct / total) * 100;
+  const stars = pct >= 90 ? 3 : pct >= 60 ? 2 : pct >= 30 ? 1 : 0;
+
+  // Save best score
+  if (gs.score > player.bestScore) player.bestScore = gs.score;
+
+  // Save level stars
+  if (gs.level) {
+    const prev = player.levelStars[gs.level.id] || 0;
+    if (stars > prev) {
+      const gained = stars - prev;
+      player.totalStars += gained;
+      player.levelStars[gs.level.id] = stars;
+    }
+  }
+  savePlayer();
+  updateCoinHUD();
+
+  if (pct === 100) {
+    triggerRocketLaunch(() => showResult(pct, stars, total));
+  } else {
+    showResult(pct, stars, total);
+  }
+}
+
+function showResult(pct, stars, total) {
+  switchTo('resultScreen');
+
+  const emoji = pct === 100 ? getEquippedEmoji() : pct >= 70 ? '🏆' : pct >= 40 ? '💪' : '🌟';
+  const title = pct === 100 ? 'PERFEITO!' : pct >= 70 ? 'Muito Bom!' : pct >= 40 ? 'Continue Tentando!' : 'Não Desista!';
+  const sub   = pct === 100
+    ? 'Você chegou à Lua! Missão cumprida! 🌕🚀'
+    : pct >= 70 ? 'Você está quase chegando na Lua!' : 'Pratique mais e você vai chegar lá!';
+
+  document.getElementById('resultIcon').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent = sub;
+  document.getElementById('statScore').textContent = gs.score;
+  document.getElementById('statCorrect').textContent = `${gs.correct}/${total}`;
+  document.getElementById('statStreak').textContent = gs.bestStreak;
+
+  // XP pill
+  const xp = document.getElementById('xpPill');
+  const coinsEarned = pct >= 70 ? 20 : 5;
+  player.coins += coinsEarned;
+  savePlayer();
+  updateCoinHUD();
+  xp.textContent = `+${coinsEarned} 🪙 bônus!`;
+  xp.style.display = 'inline-block';
+
+  // Stars
+  const sr = document.getElementById('starsRow');
+  sr.innerHTML = '';
+  for (let i = 0; i < 3; i++) {
+    const sp = document.createElement('span');
+    sp.className = 'star-anim';
+    sp.textContent = i < stars ? '⭐' : '☆';
+    sp.style.animationDelay = (i * 0.25) + 's';
+    sp.style.opacity = i < stars ? '1' : '0.25';
+    sr.appendChild(sp);
+  }
+
+  if (stars >= 2) bigConfetti();
+}
+
+function restartLevel() {
+  startGame(gs.subject);
+}
+
+// ============================================================
+// ROCKET LAUNCH ANIMATION
+// ============================================================
+function triggerRocketLaunch(cb) {
+  const ov = document.getElementById('launchOverlay');
+  const rocket = document.getElementById('launchRocket');
+  ov.style.display = 'flex';
+  ov.style.opacity = '1';
+
+  // Update title
+  document.getElementById('launchTitle').textContent = 'PERFEITO! INDO PARA A LUA! 🌕';
+
+  // Add speed stars
+  for (let i = 0; i < 40; i++) {
+    const s = document.createElement('div');
+    s.className = 'launch-star';
+    s.style.cssText = `
+      left:${Math.random()*100}vw;
+      top:${Math.random()*110-10}vh;
+      animation:speedStar ${(Math.random()*.4+.2).toFixed(2)}s linear ${(Math.random()*2).toFixed(2)}s infinite;
+      opacity:${Math.random()*.8+.2};
+    `;
+    ov.appendChild(s);
+  }
+
+  // Reset rocket animation
+  rocket.style.animation = 'none';
+  rocket.offsetHeight;
+  rocket.style.animation = 'rocketLaunch 3.5s cubic-bezier(.4,0,.2,1) forwards';
+
+  bigConfetti();
+
+  setTimeout(() => {
+    // Fade out overlay
+    ov.style.transition = 'opacity .5s';
+    ov.style.opacity = '0';
+    setTimeout(() => {
+      ov.style.display = 'none';
+      ov.style.opacity = '1';
+      ov.style.transition = '';
+      // Remove speed stars
+      ov.querySelectorAll('.launch-star').forEach(s => s.remove());
+      rocket.style.animation = '';
+      if (cb) cb();
+    }, 600);
+  }, 4200);
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function miniConfetti() { spawnConfetti(20); }
+function bigConfetti()  { spawnConfetti(80); }
+
+function spawnConfetti(n) {
+  const layer = document.getElementById('confetti-layer');
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('div');
+    c.className = 'conf';
+    c.style.cssText = `
+      left:${Math.random()*100}%;
+      background:${CONF_COLORS[Math.floor(Math.random()*CONF_COLORS.length)]};
+      width:${Math.random()*8+4}px;height:${Math.random()*8+4}px;
+      border-radius:${Math.random()>.5?'50%':'2px'};
+      --d:${(Math.random()*2+1.5).toFixed(1)}s;
+      --delay:${(Math.random()*.8).toFixed(2)}s;
+    `;
+    layer.appendChild(c);
+    setTimeout(() => c.remove(), 4000);
+  }
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+function boot() {
+  loadPlayer();
+  buildStars();
+  buildMoon();
+  buildShootingStars();
+  updateStartStats();
+  updateCoinHUD();
+
+  // Build all pixel astronaut instances
+  document.querySelectorAll('.pixel-astronaut').forEach(buildAstronaut);
+  document.querySelectorAll('.pixel-rocket').forEach(buildRocketSprite);
+}
+
+function buildAstronaut(el) {
+  if (el.children.length > 0) return; // already built
+  el.innerHTML = `
+    <div class="astro-helmet"></div>
+    <div class="astro-visor"></div>
+    <div class="astro-body"></div>
+    <div class="astro-arm-l"></div>
+    <div class="astro-arm-r"></div>
+    <div class="astro-leg-l"></div>
+    <div class="astro-leg-r"></div>
+  `;
+}
+
+function buildRocketSprite(el) {
+  if (el.children.length > 0) return;
+  el.innerHTML = `
+    <div class="rocket-body"></div>
+    <div class="rocket-stripe"></div>
+    <div class="rocket-fin-l"></div>
+    <div class="rocket-fin-r"></div>
+    <div class="rocket-nozzle"></div>
+    <div class="rocket-fire"></div>
+  `;
+}
+
+boot();
+</script>
+</body>
+</html>
